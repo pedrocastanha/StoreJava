@@ -58,7 +58,6 @@ public class UserRepository implements EntityRepository<User> {
     public List<User> findAll() {
         String query = "SELECT * FROM users";
         ArrayList<User> users = new ArrayList<>();
-
         try {
             PreparedStatement stmt = this.connection.prepareStatement(query);
             ResultSet resultSet = stmt.executeQuery();
@@ -70,14 +69,13 @@ public class UserRepository implements EntityRepository<User> {
                         resultSet.getString("password")
                 ));
             }
+            System.out.println("Total de usuários encontrados: " + users.size());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
         return users;
     }
 
-    @Override
     public Optional<User> findByEmail(String email) {
         String query = "SELECT * FROM users WHERE email = ?";
         try {

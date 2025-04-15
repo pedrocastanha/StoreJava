@@ -8,6 +8,5 @@ public interface EntityRepository<T> {
     void save(T entity);
     Optional<T> findById(UUID id);
     List<T> findAll();
-    Optional<T> findByEmail(String email);
     void deleteById(UUID id);
 }

@@ -67,9 +67,13 @@ public class Main {
                     break;
                 case 3:
                     System.out.println("Cadastrar Usuário");
+                    listaDeUsuarios.save(new User("Maria da Silva", "maria@gmail.com", "senha123"));
+                    listaDeUsuarios.save(new User("João Pereira", "joao@gmail.com", "123456"));
                     break;
                 case 4:
                     System.out.println("Listar Usuários");
+                    List<User> users = listaDeUsuarios.findAll();
+                    users.forEach(System.out::println);
                     break;
                 case 5:
                     System.out.println("Registrar Venda");
@@ -122,7 +126,17 @@ public class Main {
                         Sale sale = new Sale(UUID.randomUUID(), user, productsToBuy, paymentType, new Date().toString());
                         saleRepository.save(sale);
 
-                        System.out.println("Resumo da venda:\n" + sale);
+                        System.out.println("=== Resumo da Venda ===");
+                        System.out.println("ID da Venda: " + sale.getUuid());
+                        System.out.println("Usuário: " + sale.getUser().getName());
+                        System.out.println("Produtos Comprados:");
+                        for (Product product : sale.getProducts()) {
+                            System.out.println(" - " + product.getName() + " | Preço: R$" + product.getPrice());
+                        }
+                        System.out.println("Total Pago: R$" + totalAmount);
+                        System.out.println("Método de Pagamento: " + paymentType);
+                        System.out.println("Data da Venda: " + sale.getSaleDate());
+                        System.out.println("=========================");
                     } else {
                         System.out.println("Usuário não encontrado.");
                     }
