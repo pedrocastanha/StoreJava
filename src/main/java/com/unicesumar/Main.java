@@ -1,13 +1,15 @@
 package com.unicesumar;
 
 import com.unicesumar.entities.Product;
-import com.unicesumar.entities.User;
 import com.unicesumar.entities.Sale;
+import com.unicesumar.entities.User;
+import com.unicesumar.paymentMethods.PaymentManager;
 import com.unicesumar.paymentMethods.PaymentMethod;
+import com.unicesumar.paymentMethods.PaymentMethodFactory;
 import com.unicesumar.paymentMethods.PaymentType;
 import com.unicesumar.repository.ProductRepository;
-import com.unicesumar.repository.UserRepository;
 import com.unicesumar.repository.SaleRepository;
+import com.unicesumar.repository.UserRepository;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -20,14 +22,16 @@ public class Main {
         UserRepository listaDeUsuarios = null;
         SaleRepository saleRepository = null;
         Connection conn = null;
-        
-        // Parâmetros de conexão
+
         String url = "jdbc:sqlite:database.sqlite";
 
-        // Tentativa de conexão
         try {
             conn = DriverManager.getConnection(url);
             if (conn != null) {
+                // Inicializa o banco de dados (executa o init.sql)
+                DBUtils.initDatabase(conn);
+
+                // Instancia os repositórios
                 listaDeProdutos = new ProductRepository(conn);
                 listaDeUsuarios = new UserRepository(conn);
                 saleRepository = new SaleRepository(conn);
@@ -51,7 +55,7 @@ public class Main {
             System.out.println("4 - Listar Usuários");
             System.out.println("5 - Registrar Venda");
             System.out.println("6 - Sair");
-            System.out.println("Escolha uma opção: ");
+            System.out.print("Escolha uma opção: ");
             option = scanner.nextInt();
 
             switch (option) {
@@ -78,7 +82,6 @@ public class Main {
                 case 5:
                     System.out.println("Registrar Venda");
 
-                    // Pedir informações ao operador
                     System.out.print("Digite o Email do usuário: ");
                     String email = scanner.next();
 
@@ -115,6 +118,8 @@ public class Main {
                             case 3:
                                 paymentType = "PIX";
                                 break;
+                            default:
+                                throw new IllegalArgumentException("Opção inválida");
                         }
 
                         double totalAmount = productsToBuy.stream().mapToDouble(Product::getPrice).sum();
